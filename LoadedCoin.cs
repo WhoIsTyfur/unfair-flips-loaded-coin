@@ -5,17 +5,19 @@ using BepInEx;
 using BepInEx.Configuration;
 using UnityEngine;
 
-[BepInPlugin("tyfur.unfairflips.loadedcoin", "Loaded Coin", "1.1.0")]
+[BepInPlugin("tyfur.unfairflips.loadedcoin", "Loaded Coin", "1.2.0")]
 public class LoadedCoin : BaseUnityPlugin
 {
     const int EndingArrangement = 4;
     const int ShopArrangement = 2;
+    const int EndScreenArrangement = 5;
 
     static readonly FieldInfo FlipBlocked = typeof(CoinFlip).GetField("flipBlocked", BindingFlags.Instance | BindingFlags.NonPublic);
     static readonly FieldInfo TimeSinceMoved = typeof(CoinFlip).GetField("timeSinceMoved", BindingFlags.Instance | BindingFlags.NonPublic);
     static readonly FieldInfo IsFlipping = typeof(CoinFlip).GetField("isFlipping", BindingFlags.Instance | BindingFlags.NonPublic);
 
-    ConfigEntry<bool> autoFlip, autoBuy, saveForTop;
+    ConfigEntry<bool> autoFlip, autoBuy, saveForTop, autoRestart;
+    ConfigEntry<float> restartDelay;
     ConfigEntry<string> priority;
     ConfigEntry<KeyCode> flipKey, buyKey;
 
@@ -24,6 +26,7 @@ public class LoadedCoin : BaseUnityPlugin
     PanelManager panels;
     ShopButton[] shop = Array.Empty<ShopButton>();
     float nextBuy;
+    float endScreenSince = -1f;
 
     void Awake()
     {
@@ -33,6 +36,9 @@ public class LoadedCoin : BaseUnityPlugin
             "Upgrade order. FlipBaseWorth = Coin Value, FlipMultiplier = Combo.");
         saveForTop = Config.Bind("General", "SaveForTop", false,
             "true: only buy the top unfinished upgrade, saving up for it. false: buy the highest-priority one you can afford.");
+        autoRestart = Config.Bind("General", "AutoRestart", true,
+            "Start a new run automatically after an ending, so you can farm every ending.");
+        restartDelay = Config.Bind("General", "RestartDelay", 5f, "Seconds to stay on the end screen before restarting.");
         flipKey = Config.Bind("Keys", "ToggleFlip", KeyCode.F8, "Toggle auto flip (game must be focused).");
         buyKey = Config.Bind("Keys", "ToggleBuy", KeyCode.F9, "Toggle auto buy (game must be focused).");
         Application.runInBackground = true;
@@ -58,6 +64,26 @@ public class LoadedCoin : BaseUnityPlugin
         int arrangement = panels != null ? panels.GetCurrentArrangement() : 0;
         if (autoFlip.Value && arrangement != EndingArrangement) TryFlip();
         if (autoBuy.Value && arrangement == ShopArrangement && Time.unscaledTime >= nextBuy) TryBuy();
+        if (autoRestart.Value) TryRestart(arrangement);
+    }
+
+    // Every ending unlocks its achievement, then parks on the end screen until the player restarts.
+    void TryRestart(int arrangement)
+    {
+        if (arrangement != EndScreenArrangement)
+        {
+            endScreenSince = -1f;
+            return;
+        }
+        if (endScreenSince < 0f) endScreenSince = Time.unscaledTime;
+        if (Time.unscaledTime - endScreenSince < restartDelay.Value) return;
+
+        var meta = FindObjectOfType<MetaManager>();
+        if (meta == null) return;
+        Logger.LogInfo("Ending reached, starting a new run");
+        endScreenSince = -1f;
+        coin = null;
+        meta.ResetGame();
     }
 
     void Toggle(ConfigEntry<bool> entry, string label)

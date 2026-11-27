@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>LoadedCoin</AssemblyName>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <LangVersion>latest</LangVersion>
     <!-- Override with: dotnet build -p:GamePath="D:\SteamLibrary\steamapps\common\Unfair Flips" -->
     <GamePath Condition="'$(GamePath)' == ''">C:\Program Files (x86)\Steam\steamapps\common\Unfair Flips</GamePath>

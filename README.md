@@ -33,7 +33,7 @@ I'd had my fill of the game and just wanted the rest of the achievements. So I l
 - **Auto flip:** flips the moment the coin is ready
 - **Auto buy:** buys upgrades as soon as you can afford them, in priority order
 - **Runs in the background:** keeps going while you're tabbed out, watching something or playing another game
-- **Farms endings:** when you win, it waits out the ending, then starts on the next run by itself
+- **Farms endings:** after the 10th heads, it waits out the ending, then starts a fresh run by itself, over and over
 - **Hotkeys:** F8 pauses flipping, F9 pauses buying
 - **Configurable:** change the buy order, or have it save up for your top pick
 
@@ -50,7 +50,7 @@ I'd had my fill of the game and just wanted the rest of the achievements. So I l
 
 > **Windows**, with the Steam version of the game.
 
-**Step 1: Download.** Grab `LoadedCoin-v1.1.0.zip` from the [latest release](https://github.com/WhoIsTyfur/unfair-flips-loaded-coin/releases/latest). It's under **Assets** at the bottom.
+**Step 1: Download.** Grab `LoadedCoin-v1.2.0.zip` from the [latest release](https://github.com/WhoIsTyfur/unfair-flips-loaded-coin/releases/latest). It's under **Assets** at the bottom.
 
 **Step 2: Open the game folder.** In your Steam Library, right-click **Unfair Flips**, then **Manage**, then **Browse local files**. A folder opens with `Unfair Flips.exe` in it.
 
@@ -73,7 +73,7 @@ Unfair Flips/
 **Step 4: Play.** Launch the game from Steam like normal. The coin starts flipping on its own.
 
 > [!IMPORTANT]
-> `winhttp.dll` must sit **right next to** `Unfair Flips.exe`. If you end up with a `LoadedCoin-v1.1.0` folder inside the game folder, open it and move everything inside up one level.
+> `winhttp.dll` must sit **right next to** `Unfair Flips.exe`. If you end up with a `LoadedCoin-v1.2.0` folder inside the game folder, open it and move everything inside up one level.
 
 > [!NOTE]
 > **Upgrading from v1.0.0?** Delete `BepInEx/plugins/UnfairFlipsAutoFlip.dll`, or both versions will run at once.
@@ -104,6 +104,8 @@ Open it in Notepad, change a value, save, and restart the game.
 | `AutoFlip` | `true` | Flip automatically |
 | `AutoBuy` | `true` | Buy upgrades automatically |
 | `Priority` | `FlipBaseWorth,HeadsChance,FlipMultiplier,FlipTime` | Buy order. `FlipBaseWorth` is Coin Value, `FlipMultiplier` is Combo |
+| `AutoRestart` | `true` | Start a new run automatically after an ending |
+| `RestartDelay` | `5` | Seconds to stay on the end screen before restarting |
 | `SaveForTop` | `false` | `false`: buy the highest-priority upgrade you can afford. `true`: save up for the first unmaxed upgrade on the list and buy nothing else until you have it |
 | `ToggleFlip` | `F8` | Hotkey for auto flip |
 | `ToggleBuy` | `F9` | Hotkey for auto buy |
