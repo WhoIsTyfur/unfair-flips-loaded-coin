@@ -5,8 +5,8 @@ using BepInEx;
 using BepInEx.Configuration;
 using UnityEngine;
 
-[BepInPlugin("tyfur.unfairflips.autoflip", "Unfair Flips AutoFlip", "1.0.0")]
-public class AutoFlip : BaseUnityPlugin
+[BepInPlugin("tyfur.unfairflips.loadedcoin", "Loaded Coin", "1.1.0")]
+public class LoadedCoin : BaseUnityPlugin
 {
     const int EndingArrangement = 4;
     const int ShopArrangement = 2;
